@@ -1,0 +1,35 @@
+services:
+  # Servicio de Base de Datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: venado_hack_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: venado_user
+      POSTGRES_PASSWORD: venado_password
+      POSTGRES_DB: venado_hack_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./app/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # Servicio de la Aplicación FastAPI
+  api:
+    build: .
+    container_name: venado_hack_api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://venado_user:venado_password@db:5432/venado_hack_db"
+      PYTHONUNBUFFERED: 1
+    # Asegura que levante con reload apuntando a tu archivo principal (ej. main:app)
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:

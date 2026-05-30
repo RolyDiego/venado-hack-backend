@@ -1,4 +1,4 @@
-﻿annotated-doc==0.0.4
+annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.13.0
 bcrypt==5.0.0
@@ -29,3 +29,7 @@ typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2026.2
 uvicorn==0.48.0
+ortools
+scipy
+asyncpg
+python-multipart
