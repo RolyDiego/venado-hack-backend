@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from app.database import Base, engine
+from app.routers import merchandiser_router
+
 from app.routers import carga_datos_router
 from app.routers import auth_router
 from app.routers import dashboard_router
@@ -6,7 +9,14 @@ from app.routers import mobile_router
 from app.routers import route_router
 from app.routers import location_router
 
-app = FastAPI(title="Venado Hack Backend", version="1.0.0")
+app = FastAPI(
+    title="Venado Hack Backend",
+    version="1.0.0",
+    description="API para gestión operativa de rutas, PDVs, visitas y dashboard"
+)
+
+# Crear tablas en PostgreSQL
+Base.metadata.create_all(bind=engine)
 
 # Incluir routers
 app.include_router(carga_datos_router.router)

@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Query
 from fastapi.responses import JSONResponse
 from app.services.excel_service import ExcelService
 
-router = APIRouter(prefix="/carga-datos", tags=["carga-datos"])
+router = APIRouter()
 
 @router.post("/excel")
 async def upload_excel(
@@ -46,7 +46,7 @@ async def upload_excel(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al procesar el archivo: {str(e)}")
 
-@router.get("/excel/hojas")
+@router.post("/excel/hojas")
 async def get_excel_sheets(file: UploadFile = File(...)):
     """
     Endpoint para obtener los nombres de las hojas de un archivo Excel.
