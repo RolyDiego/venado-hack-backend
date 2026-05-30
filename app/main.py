@@ -15,9 +15,11 @@ app = FastAPI(
     description="API para gestión operativa de rutas, PDVs, visitas y dashboard"
 )
 
-# Crear tablas en PostgreSQL
-Base.metadata.create_all(bind=engine)
-
+# Crear tablas en PostgreSQL de forma asíncrona
+@app.on_event("startup")
+async def init_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 # Incluir routers
 app.include_router(carga_datos_router.router)
 app.include_router(auth_router.router)

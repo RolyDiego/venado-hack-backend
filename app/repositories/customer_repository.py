@@ -3,7 +3,8 @@ from sqlalchemy import select
 from uuid import UUID
 from typing import List, Optional
 
-from app.models.customer import Customer, CustomerVisitDay
+from app.models.customer import Customer
+from app.models.customer_visit_day import CustomerVisitDay
 
 
 class CustomerRepository:
