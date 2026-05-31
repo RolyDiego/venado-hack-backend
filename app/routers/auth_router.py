@@ -17,7 +17,7 @@ class LoginRequest(BaseModel):
 @router.post("/login")
 async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
 
-    if data.password != "123":
+    if data.password != "123456":
         raise HTTPException(status_code=401, detail="Password incorrecto")
 
     canal = data.canal.lower().strip()

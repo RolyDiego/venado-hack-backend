@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 from datetime import datetime
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.customer import Customer
@@ -10,26 +12,34 @@ from app.models.market import Market
 
 router = APIRouter()
 
-@router.get("/ruta-dia/{merchandiser_id}")
-def obtener_ruta_dia(merchandiser_id: str, db: Session = Depends(get_db)):
-    # Python: lunes=0, martes=1, ..., domingo=6
-    dia_actual = datetime.now().weekday()
 
-    merchandiser = db.query(Merchandiser).filter(
-        Merchandiser.id == merchandiser_id
-    ).first()
+@router.get("/ruta-dia/{merchandiser_id}")
+async def obtener_ruta_dia(
+    merchandiser_id: str,
+    db: AsyncSession = Depends(get_db)
+):
+    dia_actual = datetime.now().weekday() -2
+
+    result = await db.execute(
+        select(Merchandiser).where(
+            Merchandiser.id == merchandiser_id
+        )
+    )
+
+    merchandiser = result.scalar_one_or_none()
 
     if not merchandiser:
         return {"error": "Reponedor no encontrado"}
 
-    data = (
-        db.query(Customer, Market)
+    result = await db.execute(
+        select(Customer, Market)
         .join(CustomerVisitDay, CustomerVisitDay.customer_id == Customer.id)
         .join(Market, Customer.market_id == Market.id)
-        .filter(Customer.merchandiser_id == merchandiser_id)
-        .filter(CustomerVisitDay.day_of_week == dia_actual)
-        .all()
+        .where(Customer.merchandiser_id == merchandiser_id)
+        .where(CustomerVisitDay.day_of_week == dia_actual)
     )
+
+    data = result.all()
 
     return {
         "merchandiser": {

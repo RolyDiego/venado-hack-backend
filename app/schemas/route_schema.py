@@ -49,3 +49,21 @@ class GoogleMapsRouteData(BaseModel):
 class RouteOptimizationFullResponse(BaseModel):
     optimization: RouteOptimizationResponse
     google_maps_data: GoogleMapsRouteData
+
+
+class WorkPointResponse(BaseModel):
+    id: UUID
+    code: str
+    customer_name: str
+    category: str | None
+    latitude: float
+    longitude: float
+    visit_duration_minutes: int
+    market_id: UUID | None
+
+
+class WorkPointsListResponse(BaseModel):
+    merchandiser_id: UUID
+    day_of_week: int
+    total_points: int
+    work_points: List[WorkPointResponse]
