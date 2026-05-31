@@ -9,6 +9,7 @@ from app.models.customer import Customer
 from app.models.customer_visit_day import CustomerVisitDay
 from app.models.merchandiser import Merchandiser
 from app.models.market import Market
+from app.models.market_category import MarketCategory
 
 router = APIRouter()
 
@@ -32,9 +33,10 @@ async def obtener_ruta_dia(
         return {"error": "Reponedor no encontrado"}
 
     result = await db.execute(
-        select(Customer, Market)
+        select(Customer, Market, MarketCategory)
         .join(CustomerVisitDay, CustomerVisitDay.customer_id == Customer.id)
         .join(Market, Customer.market_id == Market.id)
+        .outerjoin(MarketCategory, Market.category_id == MarketCategory.id)
         .where(Customer.merchandiser_id == merchandiser_id)
         .where(CustomerVisitDay.day_of_week == dia_actual)
     )
@@ -57,8 +59,10 @@ async def obtener_ruta_dia(
                 "market": market.name,
                 "latitude": float(customer.latitude),
                 "longitude": float(customer.longitude),
-                "visit_duration_minutes": customer.visit_duration_minutes
+                "visit_duration_minutes": customer.visit_duration_minutes,
+                "category_display_name": category.display_name if category else None,
+                "category_icon": category.icon_name if category else None
             }
-            for customer, market in data
+            for customer, market, category in data
         ]
     }

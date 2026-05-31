@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Numeric, ForeignKey, DateTime
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from app.database import Base
 
 class Customer(Base):
@@ -15,3 +16,5 @@ class Customer(Base):
     visit_duration_minutes = Column(Integer, nullable=False)
     merchandiser_id = Column(UUID(as_uuid=True), ForeignKey("merchandisers.id"))
     created_at = Column(DateTime)
+
+    market = relationship("Market", back_populates="customers")

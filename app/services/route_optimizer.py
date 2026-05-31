@@ -16,7 +16,8 @@ class RouteOptimizerService:
     def optimize_route(
         origin_lat: float, 
         origin_lon: float, 
-        customers: List[Customer]
+        customers: List[Customer],
+        customer_data_map: dict = None
     ) -> RouteOptimizationFullResponse:
         
         # 1. Crear lista de ubicaciones: [Origen, Cliente 1, Cliente 2, ...]
@@ -97,6 +98,13 @@ class RouteOptimizerService:
                 # Los clientes están en index_node - 1 porque el origen está en 0
                 customer = customers[node_index - 1]
                 
+                # Obtener datos del cliente (tareas y categoría)
+                customer_data = customer_data_map.get(customer.id, {}) if customer_data_map else {}
+                tasks = customer_data.get("tasks", [])
+                category = customer_data.get("category")
+                category_display_name = customer_data.get("category_display_name")
+                category_icon = customer_data.get("category_icon")
+                
                 route_stops.append(RouteStop(
                     order=order,
                     customer_id=customer.id,
@@ -104,7 +112,11 @@ class RouteOptimizerService:
                     customer_name=customer.customer_name,
                     latitude=float(customer.latitude),
                     longitude=float(customer.longitude),
-                    visit_duration_minutes=customer.visit_duration_minutes
+                    visit_duration_minutes=customer.visit_duration_minutes,
+                    category=category,
+                    category_display_name=category_display_name,
+                    category_icon=category_icon,
+                    tasks=tasks
                 ))
                 
                 waypoints.append(GoogleMapsWaypoint(

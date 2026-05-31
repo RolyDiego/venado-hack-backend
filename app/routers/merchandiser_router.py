@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from app.database import get_db
 from app.models.merchandiser import Merchandiser
@@ -7,9 +8,9 @@ from app.models.merchandiser import Merchandiser
 router = APIRouter()
 
 @router.get("/merchandisers")
-def listar_merchandisers(db: Session = Depends(get_db)):
-
-    merchandisers = db.query(Merchandiser).all()
+async def listar_merchandisers(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Merchandiser))
+    merchandisers = result.scalars().all()
 
     return [
         {

@@ -33,6 +33,7 @@ async def init_tables():
 # Incluir routers
 app.include_router(carga_datos_router.router)
 app.include_router(auth_router.router)
+app.include_router(merchandiser_router.router)
 app.include_router(dashboard_router.router)
 app.include_router(mobile_router.router)
 app.include_router(route_router.router)

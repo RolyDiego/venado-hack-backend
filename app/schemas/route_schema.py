@@ -4,7 +4,7 @@ from typing import List, Optional
 
 
 class RouteOptimizationRequest(BaseModel):
-    merchandiser_id: UUID
+    merchandiser_id: str
     latitude: float = Field(..., ge=-90, le=90, description="Current latitude of merchandiser")
     longitude: float = Field(..., ge=-180, le=180, description="Current longitude of merchandiser")
     day_of_week: int = Field(..., ge=1, le=6, description="Day of week (1=Monday, 6=Saturday)")
@@ -19,6 +19,12 @@ class CustomerData(BaseModel):
     visit_duration_minutes: int
 
 
+class TaskResponse(BaseModel):
+    id: UUID
+    task_description: str
+    estimated_time_mins: int
+
+
 class RouteStop(BaseModel):
     order: int
     customer_id: UUID
@@ -27,6 +33,10 @@ class RouteStop(BaseModel):
     latitude: float
     longitude: float
     visit_duration_minutes: int
+    category: str | None = None
+    category_display_name: str | None = None
+    category_icon: str | None = None
+    tasks: List[TaskResponse] = []
 
 
 class RouteOptimizationResponse(BaseModel):
@@ -60,6 +70,8 @@ class WorkPointResponse(BaseModel):
     longitude: float
     visit_duration_minutes: int
     market_id: UUID | None
+    category_display_name: str | None
+    category_icon: str | None
 
 
 class WorkPointsListResponse(BaseModel):
@@ -67,3 +79,13 @@ class WorkPointsListResponse(BaseModel):
     day_of_week: int
     total_points: int
     work_points: List[WorkPointResponse]
+
+
+class MarketTasksResponse(BaseModel):
+    market_id: UUID
+    category_name: str
+    category_display_name: str
+    category_icon: str
+    total_tasks: int
+    total_estimated_time_mins: int
+    tasks: List[TaskResponse]
