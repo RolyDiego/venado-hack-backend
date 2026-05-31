@@ -89,3 +89,10 @@ class MarketTasksResponse(BaseModel):
     total_tasks: int
     total_estimated_time_mins: int
     tasks: List[TaskResponse]
+
+
+class CategoryTasksResponse(BaseModel):
+    category_id: str
+    total_tasks: int
+    total_estimated_time_mins: int
+    tasks: List[TaskResponse]

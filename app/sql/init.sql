@@ -7,9 +7,23 @@ CREATE TABLE merchandisers (
     name VARCHAR(100) NOT NULL,
     supervisor_id UUID REFERENCES supervisors(id)
 );
+CREATE TABLE market_categories (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(50) NOT NULL UNIQUE,
+    display_name VARCHAR(100) NOT NULL,
+    icon_name VARCHAR(50) NOT NULL
+);
+
+-- Insert initial market categories
+INSERT INTO market_categories (id, name, display_name, icon_name) VALUES
+('a0000000-0000-0000-0000-000000000001', 'MAYORISTA', 'Mayorista', 'store'),
+('a0000000-0000-0000-0000-000000000002', 'MINORISTA', 'Minorista', 'shopping-cart'),
+('a0000000-0000-0000-0000-000000000003', 'DETALLISTA', 'Detallista', 'tag');
+
 CREATE TABLE markets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL UNIQUE
+    name VARCHAR(100) NOT NULL UNIQUE,
+    category_id UUID REFERENCES market_categories(id)
 );
 CREATE TABLE customers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

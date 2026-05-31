@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, Numeric
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, Numeric, func
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -36,4 +36,4 @@ class OptimizedRoute(Base):
     origin_lng = Column(Numeric(12, 8), nullable=False)
     destination_ids_hash = Column(String(64), nullable=False, unique=True)
     optimized_path_json = Column(JSONB, nullable=False)
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
